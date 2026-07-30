@@ -1,6 +1,6 @@
 # E-Commerce Backend
 
-A RESTful E-Commerce Backend built using **Spring Boot** that provides secure JWT authentication, role-based authorization, product management, order processing, Apache Kafka integration, Swagger API documentation, Docker support, and MySQL database integration.
+A RESTful E-Commerce Backend built using **Spring Boot** that provides secure JWT authentication, role-based authorization, Redis caching, product management, order processing, Apache Kafka integration, Swagger API documentation, Docker support, MySQL database integration, and JUnit testing.
 
 ---
 
@@ -14,6 +14,8 @@ A RESTful E-Commerce Backend built using **Spring Boot** that provides secure JW
 - Product Review APIs
 - Order Processing APIs
 - Apache Kafka Producer & Consumer
+- Redis Caching
+- Unit Testing with JUnit & Mockito
 - Swagger/OpenAPI Documentation
 - Docker Containerization
 - MySQL Database Integration
@@ -27,6 +29,7 @@ A RESTful E-Commerce Backend built using **Spring Boot** that provides secure JW
 - Spring Boot
 - Spring Security
 - Spring Data JPA (Hibernate)
+- Spring Cache
 
 ### Security
 - JWT Authentication
@@ -34,9 +37,14 @@ A RESTful E-Commerce Backend built using **Spring Boot** that provides secure JW
 
 ### Database
 - MySQL
+- Redis
 
 ### Messaging
 - Apache Kafka
+
+### Testing
+- JUnit 5
+- Mockito
 
 ### Documentation
 - Swagger / OpenAPI
@@ -64,6 +72,8 @@ src
 ├── security
 ├── service
 ├── spec
+├── test
+│   └── ProductServiceTest
 └── resources
 ```
 
@@ -140,6 +150,30 @@ Logs Order Created Message
 
 ---
 
+## Redis Cache Flow
+
+```text
+Client Request
+      │
+      ▼
+Check Redis Cache
+      │
+ ┌────┴────┐
+ │         │
+Hit       Miss
+ │         │
+ ▼         ▼
+Return   Fetch from MySQL
+Data         │
+             ▼
+      Store in Redis
+             │
+             ▼
+      Return Response
+```
+
+---
+
 ## Running the Project
 
 ### Prerequisites
@@ -149,6 +183,7 @@ Logs Order Created Message
 - Docker
 - Docker Compose
 - MySQL
+- Redis
 
 ---
 
@@ -187,10 +222,23 @@ docker run -p 8080:8080 ecart
 
 ### Configure Database
 
-Update your database configuration in:
+Update your configuration in:
 
 ```
 src/main/resources/application.properties
+```
+
+Example:
+
+```properties
+spring.datasource.url=jdbc:mysql://localhost:3306/ecart
+spring.datasource.username=root
+spring.datasource.password=root
+
+spring.data.redis.host=localhost
+spring.data.redis.port=6379
+
+spring.kafka.bootstrap-servers=localhost:9092
 ```
 
 ---
@@ -209,7 +257,7 @@ mvn clean install
 mvn spring-boot:run
 ```
 
-The application will start on:
+Application URL:
 
 ```
 http://localhost:8080
@@ -219,13 +267,13 @@ http://localhost:8080
 
 ## Swagger Documentation
 
-After starting the application, open:
+Open:
 
 ```
 http://localhost:8080/swagger-ui/index.html
 ```
 
-Swagger can be used to test all available REST APIs.
+Swagger provides interactive documentation for all REST APIs.
 
 ---
 
@@ -237,6 +285,25 @@ Example:
 
 ```http
 Authorization: Bearer <JWT_TOKEN>
+```
+
+---
+
+## Unit Testing
+
+The project includes unit tests for the service layer using **JUnit 5** and **Mockito**.
+
+### Covered Components
+
+- ProductService
+- CRUD operation testing
+- Repository mocking using Mockito
+- Service layer validation
+
+Run all tests:
+
+```bash
+mvn test
 ```
 
 ---
@@ -254,9 +321,12 @@ Authorization: Bearer <JWT_TOKEN>
 - Spring Security
 - Role-Based Authorization
 - Apache Kafka Messaging
-- Docker
-- Swagger/OpenAPI
+- Redis Caching with Spring Cache
+- Unit Testing using JUnit 5 & Mockito
+- Docker & Docker Compose
+- Swagger/OpenAPI Documentation
 - MySQL Integration
+- Database Indexing for Query Optimization
 
 ---
 
@@ -266,5 +336,8 @@ Authorization: Bearer <JWT_TOKEN>
 
 Java Backend Developer
 
-LinkedIn:  
+**LinkedIn**  
 https://www.linkedin.com/in/charumathi-p-a167b221b
+
+**GitHub**  
+https://github.com/charu182002
