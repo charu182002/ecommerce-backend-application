@@ -1,9 +1,8 @@
 package com.ecommerce.ecart.entity;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import jakarta.persistence.Table;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -14,6 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -27,7 +27,9 @@ indexes = {
         @Index(name="idx_ratings", columnList="ratings")
     }
 )
-public class Product {
+public class Product implements Serializable{
+	
+	private static final long serialVersionUID = 1L;
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

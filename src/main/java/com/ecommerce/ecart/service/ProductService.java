@@ -1,12 +1,15 @@
 package com.ecommerce.ecart.service;
 
-import com.ecommerce.ecart.dto.ProductImageDto;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -14,6 +17,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.ecommerce.ecart.dto.ProductDto;
+import com.ecommerce.ecart.dto.ProductImageDto;
 import com.ecommerce.ecart.dto.ProductReviewDto;
 import com.ecommerce.ecart.entity.Product;
 import com.ecommerce.ecart.entity.ProductReview;
@@ -30,6 +34,7 @@ public class ProductService {
     @Autowired
     private ProductReviewRepository productReviewRepository;
 
+    @Cacheable(value = "products", key = "'page_' + #page + '_' + #size")
     public Map<String, Object> getAllProducts(int page, int size) {
 
         Pageable pageable = PageRequest.of(page, size);
@@ -82,6 +87,7 @@ public class ProductService {
         return dto;
     }
 
+    @Cacheable(value = "product", key = "#id")
     public Product getProductById(Long id) {
 
         return productRepository.findById(id)
@@ -120,11 +126,20 @@ public class ProductService {
     }
 
     // Add Product
+    @CacheEvict(value = "products", allEntries = true)
     public Product addProduct(Product product) {
         return productRepository.save(product);
     }
 
     // Update Product
+    @Caching(
+    	    put = {
+    	        @CachePut(value = "product", key = "#id")
+    	    },
+    	    evict = {
+    	        @CacheEvict(value = "products", allEntries = true)
+    	    }
+    	)
     public Product updateProduct(Long id, Product updatedProduct) {
 
         Product product = productRepository.findById(id)
@@ -143,6 +158,10 @@ public class ProductService {
     }
 
     // Delete Product
+    @Caching(evict = {
+    	    @CacheEvict(value = "product", key = "#id"),
+    	    @CacheEvict(value = "products", allEntries = true)
+    	})
     public void deleteProduct(Long id) {
 
         Product product = productRepository.findById(id)
