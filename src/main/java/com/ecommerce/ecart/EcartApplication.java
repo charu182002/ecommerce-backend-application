@@ -2,7 +2,7 @@ package com.ecommerce.ecart;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+import org.springframework.cache.annotation.EnableCaching;
 
 import io.github.cdimascio.dotenv.Dotenv;
 //import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
@@ -11,6 +11,7 @@ import io.github.cdimascio.dotenv.Dotenv;
 
 
 @SpringBootApplication
+@EnableCaching
 public class EcartApplication {
 	
 	public static void main(String[] args) {
